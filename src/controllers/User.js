@@ -3,9 +3,8 @@ const User = require('../models/User')
 const { createToken } = require('../common/Token')
 const Joi = require('joi')
 
-// MD5_SUFFIX: 'www.firepage.xyz',
 const userHelper = {
-  MD5_SUFFIX: 'www.biaochenxuying.cn*&^%$#',
+  MD5_SUFFIX: 'www.firepage.xyz*&^%$#',
   md5(pwd) {
     return crypto.createHash('md5').update(pwd).digest('hex');
   }
@@ -78,23 +77,6 @@ class UserController {
   async currentUser(ctx) {
     const user = await ctx.session.userInfo;
     user.avatar = 'https://gitee.com/reflectyi/pic/raw/master/logo.jpg';
-    user.notifyCount = 0;
-    user.address = '上海市';
-    user.country = 'China';
-    user.group = 'Ethan';
-    user.title = '移动端菜鸟';
-    user.signature = '海纳百川，有容乃大';
-    user.tags = [];
-    user.geographic = {
-      province: {
-        label: '上海市',
-        key: '330000'
-      },
-      city: {
-        label: '浦东新区',
-        key: '330100'
-      }
-    }
     ctx.body = {
       status: 200,
       data: user,

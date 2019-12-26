@@ -1,7 +1,6 @@
 const Article = require('../models/Article');
 const User = require('../models/User');
 const Joi = require('joi')
-const util = require('../common/Utils')
 // 根据相应的条件获取文章列表
 function _getList(ctx, conditions = {}, itemFields = {}, options = {}) {
   return Article.find(conditions, itemFields, options, (error, result) => {

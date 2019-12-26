@@ -1,6 +1,5 @@
 const FriendLinks = require('../models/FriendLinks');
 const Joi = require('joi')
-const { multiplePage, queryList } = require('../common/Utils')
 class FriendLinksController {
   async getLinkList(ctx) {
     const { keyword, pageNum, pageSize, type = '' } = ctx.query
@@ -30,7 +29,7 @@ class FriendLinksController {
       state: 1
     }; // 待返回的字段
     const options = {
-      skip: multiplePage({ pageNum, pageSize }),
+      skip: pageNum - 1 < 0 ? 0 : (pageNum - 1) * pageSize,
       limit: Number(pageSize),
       sort: { end_time: -1 }
     };
