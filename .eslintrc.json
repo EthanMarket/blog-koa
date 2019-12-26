@@ -1,0 +1,27 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true // 支持 node语法
+    },
+    "extends": "koa",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018,
+        "sourceType": "module" // 支持import 方式进行模块加载
+    },
+    "rules": {
+        "no-undefined": 1,
+        "semi": 0,
+        "no-unused-vars": 0,
+        "no-path-concat": "off", // 可以直接使用 __dirname
+        "arrow-spacing": 1,//=>的前/后括号
+        "arrow-parens": 0,//箭头函数用小括号括起来
+        "camelcase":0,
+        "no-ternary": 0
+    }
+}
