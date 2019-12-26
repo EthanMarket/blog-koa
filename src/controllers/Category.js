@@ -71,11 +71,11 @@ class CategoryController {
 
   async deleteCategory(ctx) {
     const validator = ctx.validate(ctx.request.body, {
-      id: Joi.string()
+      _id: Joi.string()
     })
     if (validator) {
-      const { id } = ctx.request.body
-      const result = await Category.remove({ _id: id })
+      const { _id } = ctx.request.body
+      const result = await Category.remove({ _id })
       if (result.deletedCount) {
         ctx.body = {
           status: 200,

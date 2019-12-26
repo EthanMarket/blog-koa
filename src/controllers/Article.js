@@ -70,15 +70,14 @@ class ArticleController {
 
   // 查询文章首页，所有的数据源
   async getArticleList(ctx) {
-    let {
+    const {
       likes,
       state,
       keyword,
-      category_id,
-      tag_id,
+      category_id = 0,
+      tag_id = 0,
       pageNum = 1,
-      pageSize = 10,
-      article
+      pageSize = 10
     } = ctx.query
     const skip = pageNum - 1 < 0 ? 0 : (pageNum - 1) * pageSize;
     let query = {}
@@ -94,18 +93,6 @@ class ArticleController {
         ]
       };
     }
-
-    if (category_id) {
-      const { ...rest } = query
-      query = {
-        ...rest,
-        category_id
-      }
-    }
-    // 如果是文章归档 返回全部文章
-    if (article) {
-      pageSize = 1000;
-    }
     // 限制条件
     const options = {
       skip: skip,
@@ -113,7 +100,7 @@ class ArticleController {
       sort: { create_time: -1 }
     };
     // 待返回的字段
-    let fields = {
+    const fields = {
       title: 1,
       desc: 1,
       img_url: 1,
@@ -122,49 +109,67 @@ class ArticleController {
       meta: 1,
       create_time: 1
     };
-    if (article) {
-      fields = {
-        title: 1,
-        create_time: 1
-      };
-    }
     const total = await Article.count(query)
     let list = []
-    if (tag_id) { // 如果是按标签查询
+    if (tag_id || category_id) { // 如果是按标签查询
+      const tags = tag_id ? { tags: { _id: tag_id } } : {}
+      const category = category_id ? { category: { _id: category_id } } : {}
       list = await Article.find(query, fields, options)
-        .and({ tags: { _id: tag_id } })
+        .and({ ...tags, ...category })
         .populate({ path: 'tags' })
-    } else if (article) {
-      list = await Article.aggregate([
-        { $match: query },
-        {
-          $project: {
-            ...fields,
-            year: { $year: '$create_time' }
-          }
-        },
-        {
-          $group: {
-            _id: { year: '$year' }, // 将_id设置为year数据
-            yearList: {
-              $push: {
-                _id: '$_id',
-                title: '$title',
-                create_time: '$create_time'
-              }
-            }
-          }
-        },
-        { $sort: { create_time: 1 } }
-      ])
     } else {
       list = await _getList(ctx, query, fields, options)
     }
 
-    const someOne = likes || category_id || tag_id || article
     ctx.body = {
       status: 200,
       data: { list, total },
+      code: 0,
+      message: '操作成功！'
+    }
+  }
+
+  // 获取文章目录
+  async getArticleDirectory(ctx) {
+    const {
+      state,
+      article
+    } = ctx.query
+    const query = {}
+    const fields = {
+      title: 1,
+      create_time: 1
+    };
+    // 限制条件
+    const options = {
+      limit: Number(1000),
+      sort: { create_time: -1 }
+    };
+    const list = await Article.aggregate([
+      { $match: query },
+      {
+        $project: {
+          ...fields,
+          year: { $year: '$create_time' }
+        }
+      },
+      {
+        $group: {
+          _id: { year: '$year' }, // 将_id设置为year数据
+          yearList: {
+            $push: {
+              _id: '$_id',
+              title: '$title',
+              create_time: '$create_time'
+            }
+          }
+        }
+      },
+      { $sort: { create_time: 1 } }
+    ])
+    ctx.body = {
+      status: 200,
+      data: { list },
       code: 0,
       message: '操作成功！'
     }
