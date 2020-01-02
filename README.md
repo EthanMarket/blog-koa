@@ -1,6 +1,12 @@
-## koa
+## koa2
+* 感谢[@夜尽天明](https://github.com/biaochenxuying)提供的项目，我只是koa2做了重构
+* 配合[`react-blog`](https://github.com/EthanMarket/blog-react)和[`react-blog-admin`](https://github.com/EthanMarket/blog-react-admin)后台管理系统使用
+* 本项目使用koa2+MongoDB开发
 
-* 配合`react-blog`和`react-blog-admin`后台管理系统使用
+### 用户首次登陆注册
+* 使用[**postman**](https://www.getpostman.com/)注册
+
+![](https://gitee.com/reflectyi/pic/raw/master/web/reactblog/user-register.png)
 
 ### 一、blog-koa 目录结构
 * `routes` 接口api
